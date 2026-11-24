@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Foodtogether Hubs</title>
+<meta name="description" content="Fresh fruit and vege boxes from Foodtogether, packed by local hubs and picked up down the road.">
+<meta name="robots" content="noindex">  <!-- preview: remove at launch -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;800&family=Montserrat:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: a community noticeboard, not a SaaS landing page. White paper,
+     charcoal type, rules instead of cards; the accent has one job (actions and
+     the logomark); the one bold block is the charcoal price board. */
+  :root {
+    --bg: #ffffff;
+    --tint: #f3f6f1;
+    --fg: #063a38;            /* Foodtogether Charcoal */
+    --muted: #4f6c68;
+    --rule: #cfdbd3;
+    --rule-strong: #063a38;
+    --accent: #75b259;        /* Foodtogether Green */
+    --accent-text: #3b7724;   /* accent that reads on white */
+    --on-accent: #063a38;
+    --board: #063a38;
+    --board-fg: #f4f8f2;
+    --board-muted: #a9c3bd;
+    --warn: #a14f08;
+    --bad: #a3322a;
+    --focus: #1f6fb2;
+    --row-extras: #d9e2f3;    /* blue row in the packing-list email */
+    --row-addon: #fff2cc;     /* yellow add-on row in the packing-list email */
+    --cell-rule: #cccccc;
+    --display: "Bitter", "Rockwell", Georgia, serif;          /* stands in for Jubilat */
+    --sans: "Montserrat", "Segoe UI", system-ui, sans-serif;  /* stands in for Proxima Nova */
+    --r: 4px;
+  }
+  :root[data-accent="mandarin"] { --accent: #f68121; --accent-text: #ad4f07; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a2523; --tint: #0f312e; --fg: #eef5ef; --muted: #a8c2bb; --rule: #24514b; --rule-strong: #cfe0d8;
+      --accent-text: #9fd47f; --board: #123f3b; --board-fg: #f4f8f2; --board-muted: #a9c3bd;
+      --warn: #f0a65a; --bad: #f08a80; --focus: #7fb6de; --row-extras: #22324f; --row-addon: #3f3517; --cell-rule: #355f59; color-scheme: dark;
+    }
+    :root:not([data-theme="light"])[data-accent="mandarin"] { --accent-text: #ffab62; }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a2523; --tint: #0f312e; --fg: #eef5ef; --muted: #a8c2bb; --rule: #24514b; --rule-strong: #cfe0d8;
+    --accent-text: #9fd47f; --board: #123f3b; --board-fg: #f4f8f2; --board-muted: #a9c3bd;
+    --warn: #f0a65a; --bad: #f08a80; --focus: #7fb6de; --row-extras: #22324f; --row-addon: #3f3517; --cell-rule: #355f59; color-scheme: dark;
+  }
+  :root[data-theme="dark"][data-accent="mandarin"] { --accent-text: #ffab62; }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 1rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.12; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(2.1rem, 5.6vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; letter-spacing: -0.01em; }
+  h3 { font-size: 1.1875rem; font-weight: 600; }
+  p { margin: 0; max-width: 62ch; }
+  a { color: var(--fg); text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  a:hover { color: var(--accent-text); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  .wrap { max-width: 1100px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .muted { color: var(--muted); }
+  .small { font-size: 0.875rem; }
+  .num { font-variant-numeric: tabular-nums; }
+  .note { font-size: 0.8125rem; color: var(--muted); }
+
+  /* ---------- header ---------- */
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+  .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg); border-bottom: 2px solid var(--rule-strong); }
+  .topbar .wrap { display: flex; align-items: center; gap: 10px 28px; flex-wrap: wrap; padding-block: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); }
+  .mark { width: 42px; height: 42px; flex: none; display: block; }
+  .wordmark { font-family: var(--display); font-size: 1.4rem; line-height: 1; }
+  .wordmark b { font-weight: 800; }
+  .nav { display: flex; gap: 4px 22px; flex-wrap: wrap; margin-left: auto; }
+  .nav a { text-decoration: none; font-weight: 600; font-size: 0.9375rem; padding: 4px 0; border-bottom: 3px solid transparent; }
+  .nav a[aria-current="page"] { border-bottom-color: var(--accent); }
+
+  /* ---------- controls ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center; font: 700 0.9375rem var(--sans); padding: 12px 20px; border-radius: var(--r); border: 2px solid var(--fg); background: var(--fg); color: var(--bg); text-decoration: none; cursor: pointer; }
+  .btn:hover { color: var(--bg); background: var(--muted); border-color: var(--muted); }
+  .btn.go { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn.go:hover { filter: brightness(0.95); color: var(--on-accent); }
+  .btn.plain { background: transparent; color: var(--fg); }
+  .btn.plain:hover { background: var(--tint); color: var(--fg); }
+  .btn.sm { padding: 7px 13px; font-size: 0.8125rem; }
+  .linkish { background: none; border: 0; padding: 0; font: 600 0.9375rem var(--sans); color: var(--fg); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; cursor: pointer; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field > label, legend { font-weight: 600; font-size: 0.9375rem; }
+  input[type=text], input[type=email], input[type=tel], input[type=search], select, textarea {
+    font: 400 1rem var(--sans); color: var(--fg); background: var(--bg); border: 1.5px solid var(--muted); border-radius: var(--r); padding: 10px 12px; width: 100%; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--focus); outline-offset: 0; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 0.9375rem; }
+  .check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--fg); flex: none; }
+  .form-error { color: var(--bad); font-weight: 600; font-size: 0.9375rem; }
+  .hp { position: absolute; left: -9999px; }
+  .status { font-weight: 600; font-size: 0.875rem; white-space: nowrap; }
+  .status::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 6px; vertical-align: 1px; background: currentColor; }
+  .status.open { color: var(--accent-text); }
+  .status.full { color: var(--warn); }
+  .status.soon { color: var(--muted); }
+  .status.soon::before { background: transparent; border: 1.5px solid currentColor; }
+
+  main { padding-block: 36px 96px; }
+  .block { margin-top: 64px; }
+  .crumb { font-size: 0.875rem; margin-bottom: 18px; }
+
+  /* ---------- home ---------- */
+  .hero h1 { max-width: 17ch; }
+  .hero .lead { font-size: 1.125rem; margin-top: 18px; max-width: 54ch; }
+  .search { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; max-width: 560px; }
+  .search input { flex: 1 1 240px; font-size: 1.0625rem; padding: 13px 14px; border-width: 2px; border-color: var(--fg); }
+  .facts-line { margin-top: 14px; font-size: 0.9375rem; color: var(--muted); }
+  .week { margin-top: 18px; border-top: 2px solid var(--rule-strong); }
+  .week ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .week li { padding: 10px 8px 14px; border-right: 1px solid var(--rule); min-height: 118px; display: flex; flex-direction: column; gap: 6px; font-size: 0.875rem; }
+  .week li:last-child { border-right: 0; }
+  .week .d { font-family: var(--display); font-weight: 800; font-size: 1rem; }
+  .week .ev { font-weight: 600; line-height: 1.35; }
+  .week li.open { background: var(--tint); }
+  .week li.cut .ev, .week li.pick .ev { border-left: 3px solid var(--accent); padding-left: 7px; }
+  .howcols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 32px 56px; align-items: start; }
+  .howlist { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 14px; }
+  .howlist li::marker { font-family: var(--display); font-weight: 800; color: var(--accent-text); }
+  .board { background: var(--board); color: var(--board-fg); border-radius: var(--r); padding: 28px clamp(18px, 4vw, 40px); display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px 48px; }
+  .board h2 { color: var(--board-fg); }
+  .board .muted { color: var(--board-muted); }
+  .prices { list-style: none; margin: 16px 0 0; padding: 0; }
+  .prices li { display: flex; align-items: baseline; gap: 10px; padding-block: 12px; border-bottom: 1px dashed var(--board-muted); }
+  .prices .nm { font-family: var(--display); font-weight: 600; font-size: 1.25rem; }
+  .prices .fill { flex: 1; }
+  .prices .pr { font-family: var(--display); font-weight: 800; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .prices .who { font-size: 0.875rem; color: var(--board-muted); }
+  .inbox { font-size: 0.9375rem; }
+  .inbox ul { margin: 8px 0 0; padding-left: 1.1em; columns: 2; column-gap: 24px; }
+  .photo { margin: 0; }
+  .photo .ph { aspect-ratio: 16 / 7; max-width: 100%; border: 1.5px dashed var(--muted); display: grid; place-items: center; text-align: center; padding: 16px; color: var(--muted); background: var(--tint); }
+  .photo figcaption { font-size: 0.8125rem; color: var(--muted); margin-top: 6px; }
+  .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border-top: 2px solid var(--rule-strong); }
+  .pair > div { padding: 22px 28px 6px 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .pair > div + div { padding-left: 28px; border-left: 1px solid var(--rule); }
+
+  /* ---------- hub list ---------- */
+  .finder { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; margin-top: 22px; }
+  .finder .field { flex: 1 1 280px; max-width: 460px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { font: 600 0.8125rem var(--sans); padding: 7px 11px; border-radius: var(--r); border: 1.5px solid var(--rule); background: var(--bg); color: var(--fg); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .hubrows { margin-top: 26px; border-top: 2px solid var(--rule-strong); }
+  .hubrow { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr) auto; gap: 6px 20px; align-items: baseline; padding: 16px 4px; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--fg); }
+  .hubrow:hover { background: var(--tint); color: var(--fg); }
+  .hubrow h3 { font-size: 1.125rem; }
+  .hubrow .k { display: none; color: var(--muted); font-size: 0.8125rem; }
+  .hubhead { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr) auto; gap: 20px; padding: 8px 4px; font-size: 0.8125rem; color: var(--muted); font-weight: 600; }
+  .nohub { margin-top: 26px; border-top: 2px solid var(--rule-strong); padding-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+
+  /* ---------- hub page / forms ---------- */
+  .hubtop { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px 56px; align-items: start; }
+  .deflist { margin: 22px 0 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); border-top: 2px solid var(--rule-strong); }
+  .deflist dt, .deflist dd { padding: 10px 0; border-bottom: 1px solid var(--rule); margin: 0; }
+  .deflist dt { color: var(--muted); padding-right: 24px; font-size: 0.9375rem; }
+  .deflist dd { font-weight: 600; }
+  .contact { border-left: 4px solid var(--accent); padding: 4px 0 4px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .contact b { font-size: 1.0625rem; }
+  .boxlist { list-style: none; margin: 14px 0 0; padding: 0; border-top: 2px solid var(--rule-strong); }
+  .boxlist li { padding: 14px 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; }
+  .boxlist .pr { font-family: var(--display); font-weight: 800; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+  .boxlist p { grid-column: 1 / -1; font-size: 0.875rem; color: var(--muted); }
+  .formcol { display: flex; flex-direction: column; gap: 16px; padding-top: 18px; border-top: 2px solid var(--rule-strong); }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+  .boxchoice { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+  .boxchoice label { display: flex; gap: 10px; align-items: baseline; padding: 10px 2px; border-bottom: 1px solid var(--rule); cursor: pointer; font-weight: 400; }
+  .boxchoice input { accent-color: var(--fg); width: 17px; height: 17px; flex: none; align-self: center; }
+  .boxchoice .pr { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .done { max-width: 680px; display: flex; flex-direction: column; gap: 14px; }
+  .done h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); }
+  .done .rule { width: 72px; height: 6px; background: var(--accent); }
+
+  /* ---------- order ---------- */
+  .orderhead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px 32px; align-items: end; padding-bottom: 18px; border-bottom: 2px solid var(--rule-strong); }
+  .clock { font-family: var(--display); font-weight: 800; font-size: 2rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .orderlayout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px 48px; align-items: start; }
+  .orderbox { border-bottom: 1px solid var(--rule); padding-block: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 20px; }
+  .orderbox .contents { grid-column: 1 / -1; font-size: 0.875rem; color: var(--muted); }
+  .stepper { display: flex; align-items: center; border: 1.5px solid var(--fg); border-radius: var(--r); align-self: start; }
+  .stepper button { width: 40px; height: 40px; border: 0; background: transparent; color: var(--fg); font-size: 1.25rem; font-weight: 700; cursor: pointer; }
+  .stepper button:hover { background: var(--tint); }
+  .stepper output { min-width: 32px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 86px); padding-top: 16px; border-top: 6px solid var(--accent); display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+  .lines { display: flex; flex-direction: column; gap: 6px; font-size: 0.9375rem; }
+  .lines .l, .total { display: flex; justify-content: space-between; gap: 12px; font-variant-numeric: tabular-nums; }
+  .total { border-top: 2px solid var(--rule-strong); padding-top: 10px; font-weight: 700; font-size: 1.125rem; }
+  .bank { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); border: 2px solid var(--fg); font-variant-numeric: tabular-nums; }
+  .bank dt, .bank dd { margin: 0; padding: 9px 14px; border-bottom: 1px solid var(--rule); }
+  .bank dt { color: var(--muted); }
+  .bank dd { font-weight: 700; word-break: break-all; }
+  .bank dt:nth-last-of-type(1), .bank dd:last-of-type { border-bottom: 0; }
+
+  /* ---------- admin ---------- */
+  .adminbar { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between; }
+  .tabs { display: flex; gap: 2px 18px; flex-wrap: wrap; border-bottom: 2px solid var(--rule-strong); margin-top: 22px; }
+  .tab { font: 700 0.9375rem var(--sans); padding: 10px 0; border: 0; background: none; color: var(--muted); border-bottom: 4px solid transparent; margin-bottom: -2px; cursor: pointer; }
+  .tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+  .tabpanel { padding-top: 22px; }
+  .summary { font-size: 1.0625rem; margin-bottom: 16px; }
+  .summary b { font-variant-numeric: tabular-nums; }
+  .tablewrap { overflow-x: auto; }
+  .ui { border-collapse: collapse; width: 100%; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+  .ui th, .ui td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  .ui th { font-size: 0.8125rem; color: var(--muted); font-weight: 600; border-bottom: 2px solid var(--rule-strong); }
+  .ui .r { text-align: right; }
+  .ui tfoot td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--rule-strong); }
+  .unpaid { color: var(--warn); font-weight: 600; }
+  .paid { color: var(--accent-text); font-weight: 600; }
+  .waiting { border: 2px solid var(--warn); padding: 14px 16px; max-width: 640px; display: flex; flex-direction: column; gap: 4px; }
+  .waiting b { color: var(--warn); }
+  .extras { border-top: 2px solid var(--rule-strong); max-width: 720px; }
+  .extra { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 2px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+  .extra input { width: 18px; height: 18px; accent-color: var(--fg); }
+
+  /* The packing list carries every column of the email, in the site's own table style. */
+  .email { font-size: 0.9375rem; }
+  .email h2 { margin-bottom: 2px; }
+  .email h3 { margin: 28px 0 8px; }
+  .email table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  .email th { text-align: left; padding: 9px 14px 9px 8px; font-size: 0.8125rem; color: var(--muted); font-weight: 600; border-bottom: 2px solid var(--rule-strong); white-space: nowrap; }
+  .email td { padding: 9px 14px 9px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  .email tr.sum td { border-bottom: 0; border-top: 2px solid var(--rule-strong); }
+  .email table.narrow { width: auto; }
+  main.wide { max-width: none; }
+  .mcg table { font-size: 0.8125rem; }
+  .mcg th, .mcg td { padding: 6px 8px 6px 0; white-space: normal; }
+  .mcg th { vertical-align: bottom; line-height: 1.3; }
+  .mcg td.sticky { min-width: 11em; }
+  .mcg input[type=text] { width: 3.2em; padding: 4px 5px; }
+  .mcg input:disabled { opacity: 0.4; }
+  .ui input[type=text] { width: 5.5em; padding: 6px 8px; text-align: right; }
+  .assume { border-left: 3px solid var(--warn); padding: 6px 0 6px 12px; font-size: 0.875rem; color: var(--muted); max-width: 760px; margin-bottom: 18px; }
+  .assume b { color: var(--warn); }
+  .key { display: inline-block; width: 12px; height: 12px; vertical-align: -1px; margin: 0 5px 0 12px; }
+  .email tr.x td { background: var(--row-extras); }
+  .email tr.x td:last-child { font-style: italic; }
+  .email tr.a td { background: var(--row-addon); }
+  .emailwrap { overflow-x: auto; padding-bottom: 4px; }
+  .webnote { font-size: 0.8125rem; color: var(--muted); border-left: 3px solid var(--rule); padding-left: 10px; margin-bottom: 8px; }
+
+  details { border-bottom: 1px solid var(--rule); padding-block: 14px; }
+  details:first-of-type { border-top: 2px solid var(--rule-strong); }
+  summary { font-weight: 600; cursor: pointer; font-size: 1.0625rem; }
+  details p { margin-top: 8px; }
+
+  footer { border-top: 2px solid var(--rule-strong); padding-block: 28px 110px; font-size: 0.9375rem; color: var(--muted); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; }
+  footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+  .preview { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 20; background: var(--board); color: var(--board-fg); border-radius: var(--r); padding: 5px 5px 5px 14px; display: flex; gap: 8px; align-items: center; font-size: 0.8125rem; font-weight: 600; max-width: calc(100% - 32px); border: 1px solid var(--board-muted); }
+  .preview button { font: 700 0.8125rem var(--sans); border: 0; border-radius: 3px; padding: 7px 11px; cursor: pointer; background: transparent; color: var(--board-fg); }
+  .preview button[aria-pressed="true"] { background: var(--board-fg); color: var(--board); }
+  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  @media (max-width: 860px) {
+    .howcols, .board, .hubtop, .orderlayout, .pair, .two { grid-template-columns: minmax(0, 1fr); }
+    .pair > div, .pair > div + div { padding: 20px 0 8px; border-left: 0; }
+    .pair > div + div { border-top: 1px solid var(--rule); }
+    .week ol { grid-template-columns: minmax(0, 1fr); }
+    .week li { min-height: 0; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; border-right: 0; border-bottom: 1px solid var(--rule); padding: 9px 8px; }
+    .week .d { width: 6.5em; }
+    .hubhead { display: none; }
+    .hubrow { grid-template-columns: minmax(0, 1fr) auto; }
+    .hubrow .k { display: inline; }
+    .hubrow > :nth-child(n+2):not(:last-child) { grid-column: 1 / -1; }
+    .hubrow > :last-child { grid-row: 1; grid-column: 2; }
+    .inbox ul { columns: 1; }
+    .panel { position: static; }
+    .nav { margin-left: 0; width: 100%; }
+    .preview .plabel { display: none; }
+  }
+</style>
+<style>
+  .notice { background: var(--tint); border-bottom: 1px solid var(--rule); font-size: 0.9375rem; }
+  .notice .wrap { padding-block: 10px; }
+  .notice b { color: var(--fg); }
+  .reqs { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  footer { padding-block: 28px 40px; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="Foodtogether home">
+      <img class="mark" src="data:image/png;base64,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" alt="" width="42" height="42">
+      <span class="wordmark">Food<b>together</b></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#hubs" data-nav="hubs">Find a hub</a>
+      <a href="#how" data-nav="how">How it works</a>
+      <a href="#start" data-nav="start">Host a hub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="notice" role="note">
+  <div class="wrap"><b>We're still building this site.</b> Hub listings, joining and ordering open here soon. Until then, order through
+  <a href="https://foodtogether.co.nz">our current shop</a>, or email <a href="mailto:info@foodtogether.co.nz">info@foodtogether.co.nz</a>.</div>
+</div>
+
+<main id="app" class="wrap" tabindex="-1"></main>
+
+<footer>
+  <div class="wrap">
+    <div><b style="color:var(--fg)">Foodtogether Aotearoa</b><br><a href="mailto:info@foodtogether.co.nz">info@foodtogether.co.nz</a></div>
+    <nav aria-label="Footer"><a href="#faq">Questions</a><a href="#start">Host a hub</a></nav>
+  </div>
+</footer>
+
+<script>
+// Preview build (Nov 2026): real pages only. No forms, no sample hubs, nothing
+// stored. The full design with sample data is site/mockup.html (not published).
+(function () {
+  var app = document.getElementById('app');
+  var MAIL = 'mailto:info@foodtogether.co.nz';
+  function mail(subject) { return MAIL + '?subject=' + encodeURIComponent(subject); }
+
+  var views = {};
+
+  function howSteps() {
+    return '<ol class="howlist" style="margin-top:16px">' +
+      '<li><b>Join a hub near you.</b> It\'s free, and you can stop any time.</li>' +
+      '<li><b>Order by the cut-off.</b> Choose your boxes each week, or skip the week.</li>' +
+      '<li><b>Collect on pick-up day.</b> Volunteers at the hub pack the boxes. Bring a bag.</li></ol>';
+  }
+
+  views.home = function () {
+    return '' +
+    '<section class="hero">' +
+      '<h1>Fresh fruit and vege boxes, picked up down the road.</h1>' +
+      '<p class="lead">Foodtogether hubs are run by local groups: churches, schools, community houses and neighbours. We buy in bulk from the market, the hub\'s volunteers pack the boxes, and you collect yours on pick-up day. Buying together keeps the price down.</p>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px"><a class="btn go" href="#how">How it works</a><a class="btn plain" href="#start">Host a hub</a></div>' +
+    '</section>' +
+    '<section class="block"><h2>How a week works</h2>' + howSteps() + '</section>' +
+    '<section class="pair block">' +
+      '<div><h2>Looking for a hub?</h2><p>The list of hubs goes up here soon. Until then, email us your suburb and we\'ll tell you what\'s near you.</p><a class="btn plain" href="' + mail('Is there a hub near me?') + '">Email us</a></div>' +
+      '<div><h2>Host a hub</h2><p>Churches, schools, marae, community centres and groups of neighbours run our hubs. We buy the food and plan the boxes. You give people a place to collect it.</p><a class="btn plain" href="#start">How hosting works</a></div>' +
+    '</section>' +
+    '<section class="block"><h2>Who we are</h2><p style="margin-top:12px">Foodtogether is a licensed brand of the social enterprise Do More Good Ltd, which has been helping New Zealanders get affordable fruit and vegetables for over 25 years. We give communities the support, compliance and logistics to run produce co-ops and pop-ups, so families can buy fresh food together for less.</p></section>';
+  };
+
+  views.how = function () {
+    return '<section style="max-width:760px"><h1>How it works</h1>' + howSteps() +
+      '<p style="margin-top:22px">The produce comes from the wholesale market. Depending on where the hub is, it\'s delivered to the hub or collected from the market. Because everyone orders ahead, there\'s very little waste, and anything left over goes to local needs such as a foodbank.</p>' +
+      '<p style="margin-top:14px">Some hubs also deliver.</p></section>';
+  };
+
+  views.start = function () {
+    return '<section class="hubtop"><div style="display:flex;flex-direction:column;gap:14px"><h1>Host a hub</h1>' +
+      '<p>A hub is a weekly pick-up point run by a local group. It might be a community house, op shop, church, school, hall or marae.</p>' +
+      '<h3 style="margin-top:10px">What it takes</h3><ul class="reqs">' +
+        '<li>A team of at least 4 volunteers, for up to 3 hours on pack day. They get a koha of fresh produce for their help.</li>' +
+        '<li>Space to set out up to 30 crates and pack the boxes.</li>' +
+        '<li>A secure, easy-to-reach place for people to collect their orders.</li></ul>' +
+      '<h3 style="margin-top:10px">Getting started</h3><ul class="reqs">' +
+        '<li>Set-up covers training, equipment and admin, and costs about $1500 on average. We can help look for funding, or sponsor hubs in high-need areas.</li>' +
+        '<li>New hubs run a 6-week trial, and then we look at how it\'s going together.</li>' +
+        '<li>A hub breaks even at about 40 orders a week. Beyond that, the profit can go into growing the hub, or into a paid admin or delivery role.</li></ul>' +
+      '<p style="margin-top:10px">An online form for groups is coming. For now, email us and we\'ll set up a time to talk it through.</p>' +
+      '<div><a class="btn go" href="' + mail('Hosting a Foodtogether hub') + '">Email us about hosting</a></div></div></section>';
+  };
+
+  views.soon = function () {
+    return '<section class="done"><h1>Hub listings are coming soon</h1>' +
+      '<p>Soon you\'ll be able to find a hub, join it and order your boxes here. Until then, order through <a href="https://foodtogether.co.nz">our current shop</a>, or email us your suburb and we\'ll tell you what\'s near you.</p>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn go" href="' + mail('Is there a hub near me?') + '">Email us</a><a class="btn plain" href="#home">Home</a></div></section>';
+  };
+  views.hubs = views.soon;
+
+  views.faq = function () {
+    var qa = [
+      ['Who can join?', 'Anyone. There\'s no eligibility test.'],
+      ['Do I have to order every week?', 'No. You choose each week.'],
+      ['What\'s in the boxes?', 'Seasonal fruit and vege, bought in bulk from the market. What goes in changes each week with what\'s in season and what\'s good value.'],
+      ['Do prices include GST?', 'Yes.'],
+      ['How do I order right now?', 'Through <a href="https://foodtogether.co.nz">our current shop</a>, until ordering moves to this site.']
+    ];
+    return '<section style="max-width:760px"><h1>Questions</h1><div style="margin-top:22px">' + qa.map(function (x) { return '<details><summary>' + x[0] + '</summary><p>' + x[1] + '</p></details>'; }).join('') + '</div></section>';
+  };
+
+  function notFound() { return '<section class="done"><h1>Page not found</h1><div><a class="btn" href="#home">Home</a></div></section>'; }
+
+  function route() {
+    var name = (location.hash || '#home').slice(1).replace(/-.*$/, '');
+    // Links from the full design (#hub-x, #join-x, #order-x, #admin, #interest) land on "coming soon".
+    if (/^(hub|join|order|admin|interest|privacy)$/.test(name)) name = 'soon';
+    app.innerHTML = (views[name] || notFound)();
+    document.querySelectorAll('[data-nav]').forEach(function (a) {
+      if (a.getAttribute('data-nav') === name || (a.getAttribute('data-nav') === 'hubs' && name === 'soon')) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  document.documentElement.setAttribute('data-accent', 'green');
+  route();
+})();
+</script>
+</body>
+</html>
